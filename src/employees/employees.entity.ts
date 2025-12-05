@@ -1,4 +1,4 @@
-import { Ticket } from 'src/tickets/ticket.entity';
+import { Ticket } from '../tickets/ticket.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity('employees')

@@ -5,12 +5,12 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { Client } from 'src/client/client.entity';
-import { Sector } from 'src/sectors/sector.entity';
-import { Attachment } from 'src/attachments/attachment.entity';
-import { Priority } from 'src/enums/priority/priority.enum';
-import { StatusTicket } from 'src/enums/status-ticket/status-ticket.enum';
-import { Employees } from 'src/employees/employees.entity';
+import { Client } from '../client/client.entity';
+import { Sector } from '../sectors/sector.entity';
+import { Attachment } from '../attachments/attachment.entity';
+import { Priority } from '../enums/priority/priority.enum';
+import { StatusTicket } from '../enums/status-ticket/status-ticket.enum';
+import { Employees } from '../employees/employees.entity';
 
 @Entity('tickets')
 export class Ticket {
