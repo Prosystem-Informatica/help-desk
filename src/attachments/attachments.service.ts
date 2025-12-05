@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Attachment } from './attachment.entity';
 import { CreateAttachmentDto } from './dto/create-attachment.dto';
 import { UpdateAttachmentDto } from './dto/update-attachment.dto';
-import { Ticket } from 'src/tickets/ticket.entity';
+import { Ticket } from '../tickets/ticket.entity';
 
 @Injectable()
 export class AttachmentsService {

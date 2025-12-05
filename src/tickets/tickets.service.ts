@@ -2,11 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Ticket } from './ticket.entity';
-import { Employees } from 'src/employees/employees.entity';
-import { Client } from 'src/client/client.entity';
-import { Sector } from 'src/sectors/sector.entity';
-import { StatusTicket } from 'src/enums/status-ticket/status-ticket.enum';
-import { Priority } from 'src/enums/priority/priority.enum';
+import { Employees } from '../employees/employees.entity';
+import { Client } from '../client/client.entity';
+import { Sector } from '../sectors/sector.entity';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 

@@ -6,8 +6,8 @@ import {
   IsEnum,
   IsInt,
 } from 'class-validator';
-import { Priority } from 'src/enums/priority/priority.enum';
-import { StatusTicket } from 'src/enums/status-ticket/status-ticket.enum';
+import { Priority } from '../../enums/priority/priority.enum';
+import { StatusTicket } from '../../enums/status-ticket/status-ticket.enum';
 
 export class CreateTicketDto {
   @IsString()

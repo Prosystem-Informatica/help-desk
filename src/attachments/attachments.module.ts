@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AttachmentsService } from './attachments.service';
 import { AttachmentsController } from './attachments.controller';
 import { Attachment } from './attachment.entity';
-import { Ticket } from 'src/tickets/ticket.entity';
+import { Ticket } from '../tickets/ticket.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Attachment, Ticket])],

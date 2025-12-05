@@ -5,7 +5,7 @@ import { Client } from './client.entity';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 import * as bcrypt from 'bcrypt';
-import { EmployeesService } from 'src/employees/employees.service';
+import { EmployeesService } from '../employees/employees.service';
 
 @Injectable()
 export class ClientService {

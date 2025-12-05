@@ -1,9 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { EmployeesService } from 'src/employees/employees.service';
-import { ClientService } from 'src/client/client.service';
+import { EmployeesService } from '../employees/employees.service';
+import { ClientService } from '../client/client.service';
 import * as bcrypt from 'bcrypt';
-import { UserType } from 'src/enums/auth/user-type.enum';
+import { UserType } from '../enums/auth/user-type.enum';
 
 @Injectable()
 export class AuthService {
