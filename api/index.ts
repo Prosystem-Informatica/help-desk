@@ -1,18 +1,16 @@
 import { NestFactory } from '@nestjs/core';
-import { ExpressAdapter } from '@nestjs/platform-express';
 import { AppModule } from '../src/app.module';
 import { ValidationPipe } from '@nestjs/common';
-import express, { Express, Request, Response } from 'express';
+import type { Request, Response } from 'express';
 
-let cachedApp: Express;
+let cachedApp: any;
 
-async function bootstrap(): Promise<Express> {
+async function bootstrap() {
   if (!cachedApp) {
-    const expressApp = express();
-    const app = await NestFactory.create(
-      AppModule,
-      new ExpressAdapter(expressApp),
-    );
+    const app = await NestFactory.create(AppModule, {
+      bodyParser: true,
+      rawBody: false,
+    });
 
     app.useGlobalPipes(
       new ValidationPipe({
@@ -29,6 +27,7 @@ async function bootstrap(): Promise<Express> {
 
     await app.init();
 
+    const expressApp = app.getHttpAdapter().getInstance();
     cachedApp = expressApp;
   }
   return cachedApp;
