@@ -6,7 +6,7 @@ dotenv.config({
 });
 
 interface EnvConfig {
-  dbType: 'mysql' | 'postgres' | 'sqlite';
+  dbType: 'postgres';
   dbHost: string;
   dbPort: number;
   dbUsername: string;
@@ -19,7 +19,7 @@ interface EnvConfig {
 }
 
 const env: EnvConfig = {
-  dbType: (process.env.DB_TYPE as 'mysql' | 'postgres' | 'sqlite') || 'mysql',
+  dbType: 'postgres',
   dbHost: process.env.DB_HOST || '',
   dbPort: Number(process.env.DB_PORT) || 0,
   dbUsername: process.env.DB_USERNAME || '',
