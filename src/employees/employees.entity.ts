@@ -1,5 +1,6 @@
+import { Sector } from '../sectors/sector.entity';
 import { Ticket } from '../tickets/ticket.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from 'typeorm';
 
 @Entity('employees')
 export class Employees {
@@ -14,6 +15,12 @@ export class Employees {
 
   @Column()
   password: string;
+
+  @ManyToOne(() => Sector, sector => sector.employees, {
+    eager: true,
+    nullable: false,
+  })
+  sector: Sector;
 
   @OneToMany(() => Ticket, ticket => ticket.employee)
   tickets: Ticket[];

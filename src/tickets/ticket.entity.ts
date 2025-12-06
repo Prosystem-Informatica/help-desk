@@ -26,8 +26,11 @@ export class Ticket {
   @Column({ type: 'varchar', default: StatusTicket.ABERTO })
   status: StatusTicket;
 
-  @ManyToOne(() => Employees, (employees) => employees.tickets, { eager: true })
-  employee: Employees;
+  @ManyToOne(() => Employees, (employees) => employees.tickets, {
+    eager: true,
+    nullable: true,
+  })
+  employee?: Employees | null;
 
   @ManyToOne(() => Client, client => client.tickets, { eager: true })
   client: Client;
