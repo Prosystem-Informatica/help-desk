@@ -3,6 +3,7 @@ import {
   IsEmail,
   IsNotEmpty,
   MinLength,
+  IsInt,
 } from 'class-validator';
 
 export class CreateEmployeesDto {
@@ -19,4 +20,8 @@ export class CreateEmployeesDto {
   @MinLength(6, { message: 'A senha deve ter ao menos 6 caracteres.' })
   @IsNotEmpty({ message: 'A senha é obrigatória.' })
   password: string;
+  
+  @IsInt({ message: 'sectorId deve ser um número inteiro.' })
+  @IsNotEmpty({ message: 'O sectorId é obrigatório.' })
+  sectorId: number;
 }
