@@ -4,13 +4,12 @@ import { Employees } from './employees.entity';
 import { EmployeesService } from './employees.service';
 import { EmployeesController } from './employees.controller';
 import { ClientModule } from '../client/client.module';
-import { SectorsModule } from 'src/sectors/sector.module';
+import { Sector } from 'src/sectors/sector.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Employees]),
+    TypeOrmModule.forFeature([Employees, Sector]),
     forwardRef(() => ClientModule), 
-    forwardRef(() => SectorsModule), 
   ],
   controllers: [EmployeesController],
   providers: [EmployeesService],

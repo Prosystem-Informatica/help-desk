@@ -21,7 +21,7 @@ import env from './config/env';
       synchronize: true,
       logging: env.dbLog,
       ssl: {
-        rejectUnauthorized: false, 
+        rejectUnauthorized: false,
       },
     }),
     EmployeesModule,

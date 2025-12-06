@@ -18,7 +18,7 @@ export class EmployeesService {
     private readonly clientService: ClientService,
 
     @InjectRepository(Sector)
-    private sectorRepo: Repository<Sector>,
+    private readonly sectorRepo: Repository<Sector>,
   ) {}
 
   async create(data: CreateEmployeesDto) {
@@ -50,7 +50,7 @@ export class EmployeesService {
     nome: data.nome,
     email: data.email,
     password: hash,
-    sector: sector,     // 👈 ESSENCIAL
+    sector: sector, 
   });
 
   return this.funcionarioRepo.save(employee);
