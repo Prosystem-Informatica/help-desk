@@ -18,7 +18,7 @@ import env from './config/env';
       password: env.dbPassword,
       database: env.dbName,
       autoLoadEntities: true,
-      synchronize: env.dbSync,
+      synchronize: true,
       logging: env.dbLog,
       ssl: {
         rejectUnauthorized: false, 
