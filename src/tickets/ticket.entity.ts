@@ -11,6 +11,7 @@ import { Attachment } from '../attachments/attachment.entity';
 import { Priority } from '../enums/priority/priority.enum';
 import { StatusTicket } from '../enums/status-ticket/status-ticket.enum';
 import { Employees } from '../employees/employees.entity';
+import { TicketUpdate } from './updates/ticket-update.entity';
 
 @Entity('tickets')
 export class Ticket {
@@ -45,4 +46,8 @@ export class Ticket {
     cascade: true,
   })
   attachments: Attachment[];
+
+  @OneToMany(() => TicketUpdate, update => update.ticket)
+  updates: TicketUpdate[];
+
 }

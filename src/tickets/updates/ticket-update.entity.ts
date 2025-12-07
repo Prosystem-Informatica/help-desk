@@ -8,7 +8,7 @@ export class TicketUpdate {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Ticket, ticket => ticket.updates, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Ticket, ticket => ticket, { onDelete: 'CASCADE' })
   ticket: Ticket;
 
   @ManyToOne(() => Employees)
