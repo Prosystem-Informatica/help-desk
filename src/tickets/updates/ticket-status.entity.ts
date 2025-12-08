@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
 import { Ticket } from '../ticket.entity';
 import { Employees } from '../../employees/employees.entity';
 
@@ -27,4 +27,7 @@ export class TicketStatus {
 
   @Column({ nullable: true })
   newPriority: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
 }

@@ -131,7 +131,7 @@ export class TicketsService {
     },
     relations: { employee: true },
     order: {
-      createdAt: 'DESC'
+      createdAt: 'desc'
     }
   });
 }
