@@ -6,14 +6,13 @@ import { Client } from '../client/client.entity';
 import { Sector } from '../sectors/sector.entity';
 import { TicketsService } from './tickets.service';
 import { TicketsController } from './tickets.controller';
-import { TicketUpdate } from './updates/ticket-update.entity';
-import { TicketUpdateRepository } from './updates/ticket-update.repository';
+import { TicketStatus } from './updates/ticket-status.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       Ticket,
-      TicketUpdate, 
+      TicketStatus, 
       Employees,
       Client,
       Sector,
@@ -22,10 +21,6 @@ import { TicketUpdateRepository } from './updates/ticket-update.repository';
   controllers: [TicketsController],
   providers: [
     TicketsService,
-    TicketUpdateRepository,
-  ],
-  exports: [
-    TicketUpdateRepository,
   ],
 })
 export class TicketsModule {}

@@ -1,26 +1,19 @@
-import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import { IsOptional, IsString, IsInt } from 'class-validator';
 
-export class CreateTicketUpdateDto {
-  @IsNumber()
-  @IsNotEmpty()
-  ticketId: number;
-
-  @IsNumber()
-  @IsNotEmpty()
-  employeeId: number;
-
+export class CreateTicketStatusDto {
+  @IsOptional()
   @IsString()
-  message: string;
+  message?: string;
 
+  @IsOptional()
   @IsString()
-  oldStatus: string;
+  newStatus?: string;
 
+  @IsOptional()
   @IsString()
-  newStatus: string;
+  newPriority?: string;
 
-  @IsString()
-  oldPriority: string;
-
-  @IsString()
-  newPriority: string;
+  @IsOptional()
+  @IsInt()
+  employeeId?: number;
 }
