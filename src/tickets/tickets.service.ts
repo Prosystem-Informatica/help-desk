@@ -125,12 +125,17 @@ export class TicketsService {
   }
 
   async listStatusByTicket(ticketId: number): Promise<TicketStatus[]> {
-    return this.statusRepository.find({
-      where: { ticket: { id: ticketId } },
-      relations: ['employee'],
-      order: { createdAt: 'DESC' },
-    });
-  }
+  return this.statusRepository.find({
+    where: {
+      ticket: { id: ticketId }
+    },
+    relations: { employee: true },
+    order: {
+      createdAt: 'DESC'
+    }
+  });
+}
+
 
   async update(id: number, dto: CreateTicketStatusDto): Promise<Ticket> {
     await this.addStatus(id, dto);
