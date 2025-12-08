@@ -47,7 +47,7 @@ export class Ticket {
   })
   attachments: Attachment[];
 
-  @OneToMany(() => TicketStatus, (status) => status.ticket, { cascade: true, eager: true })
+  @OneToMany(() => TicketStatus, status => status.ticket)
   statusHistory: TicketStatus[];
 
 }

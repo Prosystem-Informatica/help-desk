@@ -1,20 +1,19 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Ticket } from '../ticket.entity';
 import { Employees } from '../../employees/employees.entity';
 
-
-@Entity('ticket_updates')
-export class TicketUpdate {
+@Entity()
+export class TicketStatus {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Ticket, ticket => ticket, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Ticket, ticket => ticket.statusHistory, { onDelete: 'CASCADE' })
   ticket: Ticket;
 
-  @ManyToOne(() => Employees)
+  @ManyToOne(() => Employees, { nullable: true })
   employee: Employees;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ nullable: true })
   message: string;
 
   @Column({ nullable: true })
@@ -28,7 +27,4 @@ export class TicketUpdate {
 
   @Column({ nullable: true })
   newPriority: string;
-
-  @CreateDateColumn()
-  createdAt: Date;
 }

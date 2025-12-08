@@ -10,7 +10,7 @@ import {
 
 import { TicketsService } from './tickets.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
-import { CreateTicketUpdateDto } from './updates/dto/create-ticket-update.dto';
+import { CreateTicketStatusDto } from './updates/dto/create-ticket-update.dto';
 
 @Controller('tickets')
 export class TicketsController {
@@ -34,7 +34,7 @@ export class TicketsController {
   @Patch(':id')
   update(
     @Param('id') id: string,
-    @Body() dto: CreateTicketUpdateDto,
+    @Body() dto: CreateTicketStatusDto,
   ) {
     return this.ticketsService.update(Number(id), dto);
   }
