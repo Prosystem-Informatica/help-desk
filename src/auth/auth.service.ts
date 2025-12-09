@@ -44,53 +44,58 @@ export class AuthService {
   }
 
   async register(dto: any) {
-    const { nome, email, password } = dto;
+  const { nome, email, password, telefone, empresa, sectorId } = dto;
 
-    const existingEmployee = await this.employeeService.findByEmail(email);
-    const existingClient = await this.clientService.findByEmail(email);
+  const existingEmployee = await this.employeeService.findByEmail(email);
+  const existingClient = await this.clientService.findByEmail(email);
 
-    if (existingEmployee || existingClient) {
-      throw new BadRequestException('Email já está em uso.');
-    }
-
-    const hashed = await bcrypt.hash(password, 10);
-
-    const isProsystem =
-      email.endsWith('@prosystem.com') ||
-      email.endsWith('@prosystem.com.br');
-
-    let createdUser;
-    let userType: UserType;
-
-    if (isProsystem) {
-      if (!dto.sectorId) {
-        throw new BadRequestException('SectorId é obrigatório para funcionários.');
-      }
-
-      createdUser = await this.employeeService.create({
-        nome,
-        email,
-        password: hashed,
-        sectorId: dto.sectorId,
-      });
-
-      userType = UserType.EMPLOYEE;
-    } else {
-      if (!dto.telefone || !dto.empresa) {
-        throw new BadRequestException('Telefone e Empresa são obrigatórios para clientes.');
-      }
-
-      createdUser = await this.clientService.create({
-        nome,
-        email,
-        password: hashed,
-        telefone: dto.telefone,
-        empresa: dto.empresa,
-      });
-
-      userType = UserType.CLIENT;
-    }
-
-    return this.login(userType, createdUser);
+  if (existingEmployee || existingClient) {
+    throw new BadRequestException('Email já está em uso.');
   }
+
+  const hashed = await bcrypt.hash(password, 10);
+
+  const isProsystem =
+    email.endsWith('@prosystem.com') ||
+    email.endsWith('@prosystem.com.br');
+
+  let createdUser;
+  let userType: UserType;
+
+  if (isProsystem) {
+    if (!sectorId) {
+      throw new BadRequestException(
+        'SectorId é obrigatório para funcionários.'
+      );
+    }
+
+    createdUser = await this.employeeService.create({
+      nome,
+      email,
+      password: hashed,
+      sectorId,
+    });
+
+    userType = UserType.EMPLOYEE;
+  } else {
+    if (!telefone || !empresa) {
+      throw new BadRequestException(
+        'Telefone e Empresa são obrigatórios para clientes.'
+      );
+    }
+
+    createdUser = await this.clientService.create({
+      nome,
+      email,
+      password: hashed,
+      telefone,
+      empresa,
+    });
+
+    userType = UserType.CLIENT;
+  }
+
+  return this.login(userType, createdUser);
+}
+
 }
