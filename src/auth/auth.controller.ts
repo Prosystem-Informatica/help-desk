@@ -22,4 +22,9 @@ export class AuthController {
 
     return this.authService.login(type as UserType, user);
   }
+
+   @Post('register')
+  async register(@Body() dto: any) {
+    return this.authService.register(dto);
+  }
 }
