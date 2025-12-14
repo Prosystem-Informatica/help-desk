@@ -25,7 +25,7 @@ export class CreateTicketDto {
   status?: StatusTicket;
 
   @IsInt({ message: 'employeeId deve ser um número inteiro.' })
-  @IsNotEmpty({ message: 'O employeeId é obrigatório.' })
+  @IsOptional()
   employeeId: number;
 
   @IsInt({ message: 'clientId deve ser um número inteiro.' })
