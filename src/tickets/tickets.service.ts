@@ -104,6 +104,20 @@ export class TicketsService {
     .getMany();
 }
 
+async findByClientId(clientId: number): Promise<Ticket[]> {
+  return this.ticketRepository
+    .createQueryBuilder('ticket')
+    .leftJoinAndSelect('ticket.attachments', 'attachments')
+    .leftJoinAndSelect('ticket.statusHistory', 'statusHistory')
+    .leftJoinAndSelect('ticket.employee', 'employee')
+    .leftJoinAndSelect('ticket.client', 'client')
+    .leftJoinAndSelect('ticket.sector', 'sector')
+    .where('client.id = :clientId', { clientId })
+    .orderBy('ticket.id', 'DESC')
+    .getMany();
+}
+
+
 
   async addStatus(ticketId: number, dto: CreateTicketStatusDto): Promise<TicketStatus> {
     const ticket = await this.ticketRepository.findOne({
