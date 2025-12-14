@@ -39,6 +39,11 @@ export class TicketsController {
     return this.ticketsService.update(Number(id), dto);
   }
 
+  @Get('by-employee/:id')
+  findByEmployee(@Param('id') id: number) {
+    return this.ticketsService.findByEmployeeId(Number(id));
+  }
+
   @Patch(':id/assign/:employeeId')
   assignEmployee(
     @Param('id') id: string,
