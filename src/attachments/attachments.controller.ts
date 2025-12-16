@@ -9,6 +9,7 @@ import {
   UploadedFile,
   UseInterceptors,
   ParseIntPipe,
+  BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AttachmentsService } from './attachments.service';
@@ -19,20 +20,26 @@ export class AttachmentsController {
   constructor(private readonly attachmentsService: AttachmentsService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
-  create(
-    @UploadedFile() file: Express.Multer.File,
-    @Body('ticketId', ParseIntPipe) ticketId: number,
-  ) {
-    const base64 = `data:${file.mimetype};base64,${file.buffer.toString(
-      'base64',
-    )}`;
+async create(@Body() body: { ticketId: number; base64: string, }) {
+  const { ticketId, base64 } = body;
 
-    return this.attachmentsService.create({
-      ticketId,
-      base64,
-    });
+  if (!base64) {
+    throw new BadRequestException('Base64 é obrigatório');
   }
+
+  const match = base64.match(/^data:(.+);base64,/);
+  if (!match) {
+    throw new BadRequestException('Base64 inválido');
+  }
+
+  const mimetype = match[1];
+
+  return this.attachmentsService.create({
+    ticketId,
+    base64,
+  });
+}
+
 
   @Get()
   findAll() {

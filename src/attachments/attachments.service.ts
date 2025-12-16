@@ -20,28 +20,36 @@ export class AttachmentsService {
   ) {}
 
   async create(createAttachmentDto: CreateAttachmentDto): Promise<Attachment> {
-    const ticket = await this.ticketRepository.findOne({
-      where: { id: createAttachmentDto.ticketId },
-    });
+  const ticket = await this.ticketRepository.findOne({
+    where: { id: createAttachmentDto.ticketId },
+  });
 
-    if (!ticket) {
-      throw new NotFoundException('Ticket not found');
-    }
-
-    if (
-      !createAttachmentDto.base64 ||
-      !createAttachmentDto.base64.startsWith('data:')
-    ) {
-      throw new BadRequestException('Invalid base64 file');
-    }
-
-    const attachment = this.attachmentRepository.create({
-      base64: createAttachmentDto.base64,
-      ticket,
-    });
-
-    return this.attachmentRepository.save(attachment);
+  if (!ticket) {
+    throw new NotFoundException('Ticket not found');
   }
+
+  if (
+    !createAttachmentDto.base64 ||
+    !createAttachmentDto.base64.startsWith('data:')
+  ) {
+    throw new BadRequestException('Invalid base64 file');
+  }
+
+  const match = createAttachmentDto.base64.match(/^data:(.+);base64,/);
+  if (!match) {
+    throw new BadRequestException('Invalid base64 format');
+  }
+
+  const mimetype = match[1];
+
+  const attachment = this.attachmentRepository.create({
+    base64: createAttachmentDto.base64,
+    ticket,
+  });
+
+  return this.attachmentRepository.save(attachment);
+}
+
 
   findAll(): Promise<Attachment[]> {
     return this.attachmentRepository.find({ relations: ['ticket'] });
@@ -49,9 +57,9 @@ export class AttachmentsService {
 
   async findOne(id: number): Promise<Attachment> {
     const attachment = await this.attachmentRepository.findOne({
-      where: { id },
-      relations: ['ticket'],
-    });
+  where: { id },
+  select: ['id', 'base64'],
+});
 
     if (!attachment) {
       throw new NotFoundException(`Attachment with ID ${id} not found`);
