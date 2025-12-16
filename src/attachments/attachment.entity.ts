@@ -6,8 +6,8 @@ export class Attachment {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 255 })
-  url: string;
+  @Column({ type: 'longtext' })
+  base64: string;
 
   @ManyToOne(() => Ticket, (ticket) => ticket.attachments, {
     onDelete: 'CASCADE',

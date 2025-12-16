@@ -1,6 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UploadedFile,
+  UseInterceptors,
+  ParseIntPipe,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { AttachmentsService } from './attachments.service';
-import { CreateAttachmentDto } from './dto/create-attachment.dto';
 import { UpdateAttachmentDto } from './dto/update-attachment.dto';
 
 @Controller('attachments')
@@ -8,8 +19,19 @@ export class AttachmentsController {
   constructor(private readonly attachmentsService: AttachmentsService) {}
 
   @Post()
-  create(@Body() createAttachmentDto: CreateAttachmentDto) {
-    return this.attachmentsService.create(createAttachmentDto);
+  @UseInterceptors(FileInterceptor('file'))
+  create(
+    @UploadedFile() file: Express.Multer.File,
+    @Body('ticketId', ParseIntPipe) ticketId: number,
+  ) {
+    const base64 = `data:${file.mimetype};base64,${file.buffer.toString(
+      'base64',
+    )}`;
+
+    return this.attachmentsService.create({
+      ticketId,
+      base64,
+    });
   }
 
   @Get()
@@ -18,17 +40,26 @@ export class AttachmentsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.attachmentsService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.attachmentsService.findOne(id);
+  }
+
+  @Get(':id/file')
+  async getFile(@Param('id', ParseIntPipe) id: number) {
+    const attachment = await this.attachmentsService.findOneWithBase64(id);
+    return { base64: attachment.base64 };
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAttachmentDto: UpdateAttachmentDto) {
-    return this.attachmentsService.update(+id, updateAttachmentDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateAttachmentDto: UpdateAttachmentDto,
+  ) {
+    return this.attachmentsService.update(id, updateAttachmentDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.attachmentsService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.attachmentsService.remove(id);
   }
 }

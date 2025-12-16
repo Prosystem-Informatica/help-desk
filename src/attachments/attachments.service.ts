@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Attachment } from './attachment.entity';
@@ -24,8 +28,15 @@ export class AttachmentsService {
       throw new NotFoundException('Ticket not found');
     }
 
+    if (
+      !createAttachmentDto.base64 ||
+      !createAttachmentDto.base64.startsWith('data:')
+    ) {
+      throw new BadRequestException('Invalid base64 file');
+    }
+
     const attachment = this.attachmentRepository.create({
-      url: createAttachmentDto.url,
+      base64: createAttachmentDto.base64,
       ticket,
     });
 
@@ -55,10 +66,31 @@ export class AttachmentsService {
   ): Promise<Attachment> {
     const attachment = await this.findOne(id);
 
+    if (
+      updateAttachmentDto.base64 &&
+      !updateAttachmentDto.base64.startsWith('data:')
+    ) {
+      throw new BadRequestException('Invalid base64 file');
+    }
+
     Object.assign(attachment, updateAttachmentDto);
 
     return this.attachmentRepository.save(attachment);
   }
+
+  async findOneWithBase64(id: number): Promise<Attachment> {
+  const attachment = await this.attachmentRepository.findOne({
+    where: { id },
+    select: ['id', 'base64'],
+  });
+
+  if (!attachment) {
+    throw new NotFoundException(`Attachment with ID ${id} not found`);
+  }
+
+  return attachment;
+}
+
 
   async remove(id: number): Promise<void> {
     const attachment = await this.findOne(id);
