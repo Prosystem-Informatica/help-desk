@@ -6,7 +6,7 @@ export class Attachment {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'longtext' })
+  @Column()
   base64: string;
 
   @ManyToOne(() => Ticket, (ticket) => ticket.attachments, {
