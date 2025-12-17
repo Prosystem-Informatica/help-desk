@@ -7,7 +7,7 @@ export class Attachment {
   id: number;
 
   @Column({
-    type: 'text', nullable: true,  select: false,
+    type: 'text', nullable: true,
   })
   base64: string;
 
