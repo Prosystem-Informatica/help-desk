@@ -75,7 +75,7 @@ export class TicketsService {
 
   findAll(): Promise<Ticket[]> {
     return this.ticketRepository.find({
-      relations: ['statusHistory', 'employee', 'client', 'sector'],
+      relations: ['employee', 'client', 'sector'],
     });
   }
 
