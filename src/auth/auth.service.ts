@@ -18,51 +18,33 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string) {
-    const employee = await this.employeeService.findByEmail(email);
+  password = password.trim();
 
-    if (employee) {
-      if (
-        employee.password.startsWith('$2') &&
-        (await bcrypt.compare(password, employee.password))
-      ) {
-        return { type: UserType.EMPLOYEE, user: employee };
-      }
+  const employee = await this.employeeService.findByEmail(email);
 
-      if (
-        !employee.password.startsWith('$2') &&
-        password === employee.password
-      ) {
-        const newHash = await bcrypt.hash(password, 10);
-        await this.employeeService.update(employee.id, { password: newHash });
-        employee.password = newHash;
-
-        return { type: UserType.EMPLOYEE, user: employee };
-      }
+  if (employee) {
+    if (
+      employee.password.startsWith('$2') &&
+      (await bcrypt.compare(password, employee.password))
+    ) {
+      return { type: UserType.EMPLOYEE, user: employee };
     }
-
-    const client = await this.clientService.findByEmail(email);
-
-    if (client) {
-      if (
-        client.password.startsWith('$2') &&
-        (await bcrypt.compare(password, client.password))
-      ) {
-        return { type: UserType.CLIENT, user: client };
-      }
-
-      if (!client.password.startsWith('$2') && password === client.password) {
-        const newHash = await bcrypt.hash(password, 10);
-        await this.clientService.update(client.id, { password: newHash });
-        client.password = newHash;
-
-        return { type: UserType.CLIENT, user: client };
-      }
-    }
-
-    console.log("Pq estamos aqui ????? ", client, employee);
-
-    throw new UnauthorizedException('Email ou senha inválidos');
   }
+
+  const client = await this.clientService.findByEmail(email);
+
+  if (client) {
+    if (
+      client.password.startsWith('$2') &&
+      (await bcrypt.compare(password, client.password))
+    ) {
+      return { type: UserType.CLIENT, user: client };
+    }
+  }
+
+  throw new UnauthorizedException('Email ou senha inválidos');
+}
+
 
   async login(userType: UserType, user: any) {
     const payload = {
