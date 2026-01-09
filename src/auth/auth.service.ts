@@ -42,6 +42,8 @@ export class AuthService {
     }
   }
 
+  console.log("Oq temos nos obj > ", client, employee);
+
   throw new UnauthorizedException('Email ou senha inválidos');
 }
 
