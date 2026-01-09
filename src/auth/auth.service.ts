@@ -25,7 +25,7 @@ export class AuthService {
   if (employee) {
     if (
       employee.password.startsWith('$2') &&
-      (await bcrypt.compare(password, employee.password))
+      (await bcrypt.hash(password, employee.password))
     ) {
       return { type: UserType.EMPLOYEE, user: employee };
     }
@@ -36,7 +36,7 @@ export class AuthService {
   if (client) {
     if (
       client.password.startsWith('$2') &&
-      (await bcrypt.compare(password, client.password))
+      (await bcrypt.hash(password, client.password))
     ) {
       return { type: UserType.CLIENT, user: client };
     }
