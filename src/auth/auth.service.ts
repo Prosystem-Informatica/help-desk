@@ -21,7 +21,6 @@ export class AuthService {
     const employee = await this.employeeService.findByEmail(email);
 
     if (employee) {
-      // SENHA JÁ EM BCRYPT (normal)
       if (
         employee.password.startsWith('$2') &&
         (await bcrypt.compare(password, employee.password))
@@ -29,7 +28,6 @@ export class AuthService {
         return { type: UserType.EMPLOYEE, user: employee };
       }
 
-      // SENHA ANTIGA → MIGRA AUTOMATICAMENTE
       if (
         !employee.password.startsWith('$2') &&
         password === employee.password
@@ -60,6 +58,8 @@ export class AuthService {
         return { type: UserType.CLIENT, user: client };
       }
     }
+
+    console.log("Pq estamos aqui ????? ", client, employee);
 
     throw new UnauthorizedException('Email ou senha inválidos');
   }
