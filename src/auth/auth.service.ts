@@ -1,7 +1,11 @@
-import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  BadRequestException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { EmployeesService } from '../employees/employees.service';
-import { ClientService } from '../client/client.service';
+  import { ClientService } from '../client/client.service';
 import * as bcrypt from 'bcrypt';
 import { UserType } from '../enums/auth/user-type.enum';
 
@@ -16,14 +20,45 @@ export class AuthService {
   async validateUser(email: string, password: string) {
     const employee = await this.employeeService.findByEmail(email);
 
-    if (employee && (await bcrypt.compare(password, employee.password))) {
-      return { type: UserType.EMPLOYEE, user: employee };
+    if (employee) {
+      // SENHA JÁ EM BCRYPT (normal)
+      if (
+        employee.password.startsWith('$2') &&
+        (await bcrypt.compare(password, employee.password))
+      ) {
+        return { type: UserType.EMPLOYEE, user: employee };
+      }
+
+      // SENHA ANTIGA → MIGRA AUTOMATICAMENTE
+      if (
+        !employee.password.startsWith('$2') &&
+        password === employee.password
+      ) {
+        const newHash = await bcrypt.hash(password, 10);
+        await this.employeeService.update(employee.id, { password: newHash });
+        employee.password = newHash;
+
+        return { type: UserType.EMPLOYEE, user: employee };
+      }
     }
 
     const client = await this.clientService.findByEmail(email);
 
-    if (client && (await bcrypt.compare(password, client.password))) {
-      return { type: UserType.CLIENT, user: client };
+    if (client) {
+      if (
+        client.password.startsWith('$2') &&
+        (await bcrypt.compare(password, client.password))
+      ) {
+        return { type: UserType.CLIENT, user: client };
+      }
+
+      if (!client.password.startsWith('$2') && password === client.password) {
+        const newHash = await bcrypt.hash(password, 10);
+        await this.clientService.update(client.id, { password: newHash });
+        client.password = newHash;
+
+        return { type: UserType.CLIENT, user: client };
+      }
     }
 
     throw new UnauthorizedException('Email ou senha inválidos');
@@ -44,58 +79,57 @@ export class AuthService {
   }
 
   async register(dto: any) {
-  const { nome, email, password, telefone, empresa, sectorId } = dto;
+    const { nome, email, password, telefone, empresa, sectorId } = dto;
 
-  const existingEmployee = await this.employeeService.findByEmail(email);
-  const existingClient = await this.clientService.findByEmail(email);
+    const existingEmployee = await this.employeeService.findByEmail(email);
+    const existingClient = await this.clientService.findByEmail(email);
 
-  if (existingEmployee || existingClient) {
-    throw new BadRequestException('Email já está em uso.');
-  }
-
-  const hashed = await bcrypt.hash(password, 10);
-
-  const isProsystem =
-    email.endsWith('@prosystem.com') ||
-    email.endsWith('@prosystem.com.br');
-
-  let createdUser;
-  let userType: UserType;
-
-  if (isProsystem) {
-    if (!sectorId) {
-      throw new BadRequestException(
-        'SectorId é obrigatório para funcionários.'
-      );
+    if (existingEmployee || existingClient) {
+      throw new BadRequestException('Email já está em uso.');
     }
 
-    createdUser = await this.employeeService.create({
-      nome,
-      email,
-      password: hashed,
-      sectorId,
-    });
+    const hashed = await bcrypt.hash(password, 10);
 
-    userType = UserType.EMPLOYEE;
-  } else {
-    if (!telefone || !empresa) {
-      throw new BadRequestException(
-        'Telefone e Empresa são obrigatórios para clientes.'
-      );
+    const isProsystem =
+      email.endsWith('@prosystem.com') ||
+      email.endsWith('@prosystem.com.br');
+
+    let createdUser;
+    let userType: UserType;
+
+    if (isProsystem) {
+      if (!sectorId) {
+        throw new BadRequestException(
+          'SectorId é obrigatório para funcionários.',
+        );
+      }
+
+      createdUser = await this.employeeService.create({
+        nome,
+        email,
+        password: hashed,
+        sectorId,
+      });
+
+      userType = UserType.EMPLOYEE;
+    } else {
+      if (!telefone || !empresa) {
+        throw new BadRequestException(
+          'Telefone e Empresa são obrigatórios para clientes.',
+        );
+      }
+
+      createdUser = await this.clientService.create({
+        nome,
+        email,
+        password: hashed,
+        telefone,
+        empresa,
+      });
+
+      userType = UserType.CLIENT;
     }
 
-    createdUser = await this.clientService.create({
-      nome,
-      email,
-      password: hashed,
-      telefone,
-      empresa,
-    });
-
-    userType = UserType.CLIENT;
+    return this.login(userType, createdUser);
   }
-
-  return this.login(userType, createdUser);
-}
-
 }
